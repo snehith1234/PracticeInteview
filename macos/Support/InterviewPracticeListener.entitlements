@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Entitlements required for the app to open the microphone and use speech
+  recognition. Without com.apple.security.device.audio-input, CoreAudio refuses
+  to start the input node (avfaudio error 1937010544 / 'fmt?').
+
+  These are standard, documented capabilities:
+    - device.audio-input : record from the microphone (AVAudioEngine)
+    - network.client      : reach the local FastAPI backend over HTTP
+  App Sandbox is left OFF for local development so the ad-hoc bundle can talk to
+  localhost freely; enable it with proper signing for distribution.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+</dict>
+</plist>
