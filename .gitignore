@@ -1,0 +1,24 @@
+# --- Python / backend ---
+backend/venv/
+backend/uploads/
+**/__pycache__/
+*.pyc
+.env
+*/.env
+
+# --- Swift / macOS ---
+macos/.build/
+macos/dist/
+.build/
+dist/
+*.xcodeproj
+
+# --- stray duplicate / scratch folders (not part of the project) ---
+macos copy/
+meetingnotes/
+
+# --- Node / frontend ---
+frontend/node_modules/
+
+# --- OS ---
+.DS_Store

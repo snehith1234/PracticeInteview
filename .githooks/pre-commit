@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Blocks commits that contain an OpenAI-style API key or a tracked .env file.
+# Enable once with:  git config core.hooksPath .githooks
+set -euo pipefail
+
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+
+# 1) Never allow a real .env to be committed (only .env.example templates).
+for f in $staged; do
+  case "$f" in
+    *.env|.env|*/.env)
+      echo "❌ Refusing to commit env file: $f"
+      echo "   .env files hold secrets and must stay untracked."
+      exit 1
+      ;;
+  esac
+done
+
+# 2) Block OpenAI-style secret keys in any staged content (incl. .env.example).
+if git diff --cached -U0 | grep -nE 'sk-(proj-)?[A-Za-z0-9_-]{20,}' >/dev/null; then
+  echo "❌ A possible OpenAI API key was found in staged changes."
+  echo "   Remove it (put real keys in backend/.env, which is gitignored)."
+  git diff --cached -U0 | grep -nE 'sk-(proj-)?[A-Za-z0-9_-]{20,}' | head
+  exit 1
+fi
+
+exit 0

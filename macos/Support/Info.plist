@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Permission usage strings shown in the macOS permission prompts.
+  - NSMicrophoneUsageDescription: required because we capture mic audio to
+    transcribe the interview question (AVAudioEngine).
+  - NSSpeechRecognitionUsageDescription: required because we use Apple's Speech
+    framework (SFSpeechRecognizer) to turn that audio into a transcript, which
+    replaces the browser's webkitSpeechRecognition.
+  Only these two permissions are requested; nothing else is needed.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>InterviewPracticeListener uses the microphone to capture your interview question so it can be transcribed.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>InterviewPracticeListener uses speech recognition to turn captured audio into a transcript for generating practice answers.</string>
+    <key>LSUIElement</key>
+    <true/>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+</dict>
+</plist>
