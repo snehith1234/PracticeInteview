@@ -75,8 +75,12 @@ final class OverlayController: NSObject, NSWindowDelegate {
     }
 
     func toggleVisibility() {
-        if panel.isVisible { panel.orderOut(nil) }
-        else { show() }
+        if panel.isVisible {
+            panel.orderOut(nil)
+        } else {
+            NSApp.activate(ignoringOtherApps: true)
+            show()
+        }
     }
 
     private func applyOpacity(_ value: Double) {

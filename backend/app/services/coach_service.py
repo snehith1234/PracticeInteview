@@ -392,6 +392,35 @@ Rules:
 4. If the candidate hasn't worked with a technology or domain, say that clearly and briefly.
 5. Do not force JD keywords into the answer unless they naturally relate to the question.
 
+ANSWER STRUCTURE BY QUESTION CATEGORY:
+First, silently classify the detected question into ONE category, then shape the spoken
+sections using that category's proven structure. Do NOT print the category name — just let
+it guide the structure. Keep everything in the natural, one-sentence-per-line spoken style.
+
+- BEHAVIORAL ("tell me about a time...", conflict, failure, deadline): use STAR —
+  briefly set the Situation, state your Task, spend most of the answer on the ACTION you
+  personally took, and finish with the Result (quantified if possible) and what you learned.
+- EXPERIENCE / BACKGROUND ("walk me through your resume / your role"): give a short
+  chronological arc — where you are now, one or two defining projects, and the thread that
+  connects your path to this role. Not a resume recital.
+- CONCEPTUAL / TECHNICAL KNOWLEDGE ("what is X", "difference between X and Y", "explain
+  Z"): lead with a one-line definition, then how it works, then a tradeoff or when-to-use
+  comparison, then a short "I've used this when..." example. The tradeoff shows depth.
+- SCENARIO / SITUATIONAL-TECHNICAL ("how would you test X", "prod is down, what do you
+  do"): clarify the scope in a sentence, then give a systematic step-by-step approach in
+  order, mention how you prioritize, and how you verify it's resolved. Show a METHOD.
+- SYSTEM DESIGN / ARCHITECTURE ("design a URL shortener / rate limiter"): start with
+  requirements (functional + scale/latency), then the main components and data flow, then
+  deep-dive one part, then tradeoffs and where it breaks at scale.
+- DOMAIN-SPECIFIC (SQL, cloud/DevOps, security, data): answer in that domain's vocabulary
+  grounded in tools the candidate has actually used; if it asks to write something, the
+  Code section carries the solution.
+- CLOSING / LOGISTICS ("questions for us?"): keep it short, sincere, and forward-looking.
+
+Regardless of category, follow this skeleton: lead with the direct answer, support it with
+the category structure above, ground it with one concrete example, and only connect back to
+the role when it is natural.
+
 CRITICAL OUTPUT FORMAT — NATURAL SPOKEN ANSWER:
 Display every answer as ONE SENTENCE PER POINT — each line starts with "- ", contains one complete thought, and ends with a full stop. Do NOT write paragraphs. Keep the natural spoken flow.
 - STOP TRYING TO MAXIMIZE KEYWORD COVERAGE. Prioritize believable spoken answers over matching every line of the job description. Give one or two small concrete examples from actual work instead of listing every tool and skill.
@@ -420,6 +449,19 @@ with a real, correct, runnable solution inside a fenced code block. Rules for th
 For NON-coding questions (behavioral, experience, conceptual), do NOT include a "# Code"
 section at all. Omit the heading entirely.
 
+DIAGRAMS / FLOW CHARTS:
+For questions about SYSTEM DESIGN, ARCHITECTURE, data flow, request/response flow, a
+workflow or process, a pipeline (CI/CD), a sequence of steps between components, or an
+ER/relationship, you MUST include a "# Diagram" section drawn as an ASCII diagram inside a
+fenced ```text block. (For "design a ___" / "how is ___ architected" / "explain the flow of
+___" questions, a diagram is expected — include it.) Rules:
+- Use simple boxes and arrows with characters like [ ], -->, |, v, and +---+ lines.
+- Keep it compact (fits in a narrow window) and label the boxes clearly.
+- Show direction of flow (e.g. Client --> API --> Service --> DB).
+- The spoken sections still explain the design in words — the Diagram is a visual aid.
+Do NOT force a diagram onto behavioral, experience, or simple conceptual questions. If a
+visual would not add clarity, OMIT the "# Diagram" heading entirely.
+
 Return in this format:
 # Detected Question
 (The clear interview question you identified)
@@ -437,6 +479,10 @@ Return in this format:
 (ONLY for coding questions — a fenced code block with a correct, runnable solution, then a
 "Time: O(...) | Space: O(...)" line. OMIT this entire section for non-coding questions.)
 
+# Diagram
+(ONLY when a visual adds clarity — an ASCII flow/box diagram inside a ```text fence. OMIT
+this entire section otherwise.)
+
 # Key Points to Mention
 (Short bullet reminders)
 
@@ -448,7 +494,7 @@ Return in this format:
 """
     return responses_stream(
         prompt,
-        system="First identify the question from the transcript, then generate a natural spoken answer. Use simple English. Sound like a real person, not AI output. Prefer specific examples over broad claims. For coding questions, also provide a correct runnable code solution in a fenced code block.",
+        system="First identify the question from the transcript, then generate a natural spoken answer. Use simple English. Sound like a real person, not AI output. Prefer specific examples over broad claims. For coding questions, also provide a correct runnable code solution in a fenced code block. For design/architecture/workflow questions, also provide a compact ASCII diagram when it adds clarity.",
         api_key=api_key,
         model=model,
         kind="answer",

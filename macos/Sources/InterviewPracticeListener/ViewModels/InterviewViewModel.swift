@@ -24,6 +24,11 @@ final class InterviewViewModel: ObservableObject {
     /// standalone Detect Question action.
     @Published var detected: DetectResponse?
 
+    /// Editable copy of the detected/answered question. Populated automatically
+    /// whenever a question is detected so the user can correct a misheard word
+    /// and regenerate from the corrected text.
+    @Published var editableQuestion: String = ""
+
     /// Feedback from Evaluate My Answer.
     @Published var evaluationFeedback: String = ""
     @Published var isEvaluating = false
@@ -154,9 +159,15 @@ final class InterviewViewModel: ObservableObject {
                 body: body, apiKey: settings.apiKey
             ) { [weak self] accumulated in
                 Task { @MainActor in
-                    self?.answer.quickAnswer = AnswerParser.extractQuickAnswer(from: accumulated)
+                    guard let self else { return }
+                    self.answer.quickAnswer = AnswerParser.extractQuickAnswer(from: accumulated)
                     if let q = AnswerParser.extractQuickQuestion(from: accumulated), !q.isEmpty {
-                        self?.answer.question = q
+                        self.answer.question = q
+                        // Populate the editable question box IMMEDIATELY (as
+                        // soon as it's detected in Phase 1, alongside "Say This
+                        // Now"), so the user can fix a misheard word right away
+                        // while the rest of the answer is still generating.
+                        self.editableQuestion = q
                     }
                 }
             }
@@ -189,6 +200,10 @@ final class InterviewViewModel: ObservableObject {
                 if answer.question.isEmpty {
                     answer.question = "From transcript"
                 }
+                // NOTE: editableQuestion is populated in Phase 1 (as soon as
+                // the question is detected, alongside "Say This Now"), so we do
+                // NOT overwrite it here — that would clobber any correction the
+                // user made while the answer was still generating.
                 history.insert(answer, at: 0)
             }
         } catch {
@@ -209,6 +224,8 @@ final class InterviewViewModel: ObservableObject {
         speech.pauseForGeneration()
         await twoPhaseAnswer(text.trimmingCharacters(in: .whitespacesAndNewlines))
     }
+
+
 
     // MARK: - Context: profile + uploads
 
@@ -294,9 +311,12 @@ final class InterviewViewModel: ObservableObject {
                 apiKey: settings.apiKey, as: DetectResponse.self
             )
             detected = resp
-            if let q = resp.clean_question, !q.isEmpty { answer.question = q }
+            if let q = resp.clean_question, !q.isEmpty {
+                answer.question = q
+                editableQuestion = q   // keep ready for correction
+            }
             statusMessage = (resp.is_interview_question ?? false)
-                ? "Question detected." : "No clear interview question detected."
+                ? "Question detected — edit it if needed, then Regenerate." : "No clear interview question detected."
         } catch {
             reportError(error)
         }

@@ -79,6 +79,11 @@ struct OverlayView: View {
                     CodeCard(raw: vm.answer.code, fontSize: settings.fontSize)
                 }
 
+                // Diagram (design/architecture/workflow) — shown in both modes.
+                if !vm.answer.diagram.isEmpty {
+                    DiagramCard(raw: vm.answer.diagram, fontSize: settings.fontSize)
+                }
+
                 if !vm.isCompact {
                     AnswerCard(title: "30-Second Version", text: vm.answer.thirtySecond,
                                isLoading: vm.loadingState.fullAnswerLoading && vm.answer.thirtySecond.isEmpty,

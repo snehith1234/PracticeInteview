@@ -28,6 +28,9 @@ struct InterviewAnswer: Identifiable, Equatable {
     /// # Code — only populated for coding questions (fenced code + complexity).
     var code: String = ""
 
+    /// # Diagram — only populated when a visual (ASCII flow/box) adds clarity.
+    var diagram: String = ""
+
     var keyPoints: String = ""
     var followUpQuestions: String = ""
     var followUpHints: String = ""

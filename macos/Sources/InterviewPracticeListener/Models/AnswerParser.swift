@@ -23,6 +23,7 @@ enum AnswerParser {
         case realTimeExample
         case strongAnswer
         case code
+        case diagram
         case keyPoints
         case followUpQuestions
         case followUpHints
@@ -34,6 +35,7 @@ enum AnswerParser {
         (.realTimeExample, "real-time example"),
         (.strongAnswer, "strong answer"),
         (.code, "code"),
+        (.diagram, "diagram"),
         (.keyPoints, "key points to mention"),
         (.followUpQuestions, "possible follow-up questions"),
         (.followUpHints, "follow-up answer hints"),
@@ -49,6 +51,7 @@ enum AnswerParser {
         if let s = sections[.realTimeExample] { answer.realTimeExample = s }
         if let s = sections[.strongAnswer] { answer.strongAnswer = s }
         if let s = sections[.code] { answer.code = s }
+        if let s = sections[.diagram] { answer.diagram = s }
         if let s = sections[.keyPoints] { answer.keyPoints = s }
         if let s = sections[.followUpQuestions] { answer.followUpQuestions = s }
         if let s = sections[.followUpHints] { answer.followUpHints = s }
